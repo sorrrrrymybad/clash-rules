@@ -1,0 +1,5 @@
+payload:
+  - '+.audiences.me'
+  - 'audiences.me'
+  - '+.mua.xloli.cc'
+  - 'mua.xloli.cc'
