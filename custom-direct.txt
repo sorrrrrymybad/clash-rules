@@ -11,6 +11,8 @@ payload:
   - 'hhanclub.net'
   - '+.m-team.cc'
   - 'm-team.cc'
+  - '+.m-team.io'
+  - 'm-team.io'
   - '+.ptcafe.club'
   - 'ptcafe.club'
   - '+.buuuug.com'
