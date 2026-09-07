@@ -1,0 +1,255 @@
+allow-lan: true
+bind-address: '*'
+mode: rule
+log-level: info
+dns:
+    enable: true
+    ipv6: false
+    default-nameserver: [223.5.5.5, 119.29.29.29, 114.114.114.114]
+    enhanced-mode: fake-ip
+    fake-ip-range: 198.18.0.1/16
+    use-hosts: true
+    respect-rules: true
+    proxy-server-nameserver: [223.5.5.5, 119.29.29.29, 114.114.114.114]
+    nameserver: [223.5.5.5, 119.29.29.29, 114.114.114.114]
+    fallback: [1.1.1.1, 8.8.8.8]
+    fallback-filter: { geoip: true, geoip-code: CN, geosite: [gfw], ipcidr: [240.0.0.0/4], domain: [+.google.com, +.facebook.com, +.youtube.com] }
+
+# ----------------------------------------------------
+# 1. 策略组配置 (Proxy Groups)
+# ----------------------------------------------------
+proxy-groups:
+  - name: 剩余流量
+    type: select
+    include-all: true
+    filter: "(?i)D"
+
+  # 节点选择（总控）
+  - name: 节点选择
+    type: select
+    proxies:
+      - 自动选择
+      - DIRECT
+    include-all: true
+    exclude-filter: "(?i)D"
+
+  # 自动选择（按延迟测速）
+  - name: 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    include-all: true
+    exclude-filter: "(?i)D"
+
+  # AI
+  - name: AI
+    type: select
+    proxies:
+      - 节点选择
+    include-all: true
+    filter: "(?i)🇯🇵|🇺🇸"
+    exclude-filter: "(?i)D"
+
+  # 谷歌服务
+  - name: 谷歌服务
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+    include-all: true
+    filter: "(?i)🇯🇵|🇺🇸"
+    exclude-filter: "(?i)D"
+
+  # 电报消息
+  - name: 电报消息
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+    include-all: true
+    filter: "(?i)🇯🇵|🇺🇸"
+    exclude-filter: "(?i)D"
+
+  # 苹果服务
+  - name: 苹果服务
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  # 自定义代理流量
+  - name: 自定义
+    type: select
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  # 漏网之鱼（兜底）
+  - name: 漏网之鱼
+    type: select
+    proxies:
+      - 节点选择
+      - DIRECT
+
+# ----------------------------------------------------
+# 2. 规则集提供者 (Rule Providers)
+# ----------------------------------------------------
+rule-providers:
+  reject:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/reject.txt"
+    path: ./ruleset/reject.yaml
+    interval: 86400
+
+  icloud:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/icloud.txt"
+    path: ./ruleset/icloud.yaml
+    interval: 86400
+
+  apple:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/apple.txt"
+    path: ./ruleset/apple.yaml
+    interval: 86400
+
+  google:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/google.txt"
+    path: ./ruleset/google.yaml
+    interval: 86400
+
+  proxy:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/proxy.txt"
+    path: ./ruleset/proxy.yaml
+    interval: 86400
+
+  direct:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/direct.txt"
+    path: ./ruleset/direct.yaml
+    interval: 86400
+
+  private:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/private.txt"
+    path: ./ruleset/private.yaml
+    interval: 86400
+
+  gfw:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/gfw.txt"
+    path: ./ruleset/gfw.yaml
+    interval: 86400
+
+  tld-not-cn:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/tld-not-cn.txt"
+    path: ./ruleset/tld-not-cn.yaml
+    interval: 86400
+
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/telegramcidr.txt"
+    path: ./ruleset/telegramcidr.yaml
+    interval: 86400
+
+  cncidr:
+    type: http
+    behavior: ipcidr
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/cncidr.txt"
+    path: ./ruleset/cncidr.yaml
+    interval: 86400
+
+  lancidr:
+    type: http
+    behavior: ipcidr
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/lancidr.txt"
+    path: ./ruleset/lancidr.yaml
+    interval: 86400
+
+  applications:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/applications.txt"
+    path: ./ruleset/applications.yaml
+    interval: 86400
+
+  custom-direct:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/sorrrrrymybad/clash-rules/main/custom-direct.txt"
+    path: ./ruleset/custom-direct.yaml
+    interval: 86400
+
+  custom-proxy:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/sorrrrrymybad/clash-rules/main/custom-proxy.txt"
+    path: ./ruleset/custom-proxy.yaml
+    interval: 86400
+
+  ai-global:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/clash/global.yaml"
+    path: ./ruleset/ai-global.yaml
+    interval: 86400
+
+  ai-cn:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/clash/cn.yaml"
+    path: ./ruleset/ai-cn.yaml
+    interval: 86400
+
+# ----------------------------------------------------
+# 3. 规则匹配 (自上而下，首条命中即生效)
+# ----------------------------------------------------
+rules:
+  # 1. 本地/局域网与特殊应用优先直连
+  - RULE-SET,applications,DIRECT
+  - RULE-SET,private,DIRECT
+
+  # 2. 用户自定义高优先级分流（防止被后续通用规则覆盖）
+  - RULE-SET,custom-direct,DIRECT
+  - RULE-SET,custom-proxy,自定义
+  - RULE-SET,ai-global,AI
+  - RULE-SET,ai-cn,DIRECT
+
+
+  # 3. 广告拦截优先命中丢弃
+  - RULE-SET,reject,REJECT
+
+  # 4. 独立专项业务（命中后即终止，不会掉入下方的通用 proxy/direct）
+  - RULE-SET,google,谷歌服务
+  - RULE-SET,telegramcidr,电报消息,no-resolve
+  - RULE-SET,icloud,苹果服务
+  - RULE-SET,apple,苹果服务
+
+  # 5. 通用外部代理名单
+  - RULE-SET,proxy,节点选择
+  - RULE-SET,gfw,节点选择
+  - RULE-SET,tld-not-cn,节点选择
+
+  # 6. 国内与局域网直连名单
+  - RULE-SET,direct,DIRECT
+  - RULE-SET,lancidr,DIRECT,no-resolve
+  - RULE-SET,cncidr,DIRECT,no-resolve
+  - GEOIP,LAN,DIRECT,no-resolve
+  - GEOIP,CN,DIRECT
+
+  # 7. 漏网之鱼兜底
+  - MATCH,漏网之鱼
