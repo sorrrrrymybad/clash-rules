@@ -190,14 +190,14 @@ rule-providers:
   custom-direct:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/sorrrrrymybad/clash-rules/main/custom-direct.txt"
+    url: "https://raw.githubusercontent.com/sorrrrrymybad/clash-rules/main/clash/custom-direct.txt"
     path: ./ruleset/custom-direct.yaml
     interval: 86400
 
   custom-proxy:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/sorrrrrymybad/clash-rules/main/custom-proxy.txt"
+    url: "https://raw.githubusercontent.com/sorrrrrymybad/clash-rules/main/clash/custom-proxy.txt"
     path: ./ruleset/custom-proxy.yaml
     interval: 86400
 
