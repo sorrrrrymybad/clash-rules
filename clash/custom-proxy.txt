@@ -1,3 +1,4 @@
 payload:
   - '+.audiences.me'
   - '+.mua.xloli.cc'
+  - '+.yu-scene.net'
