@@ -2,3 +2,4 @@ payload:
   - '+.audiences.me'
   - '+.mua.xloli.cc'
   - '+.yu-scene.net'
+  - '+.anyrouter.top'
