@@ -84,6 +84,8 @@ proxy-groups:
     proxies:
       - 节点选择
       - DIRECT
+    include-all: true
+    exclude-filter: "(?i)D"
 
   # 漏网之鱼（兜底）
   - name: 漏网之鱼
